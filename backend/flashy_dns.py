@@ -1,4 +1,3 @@
-# flashy_dns.py
 import argparse
 import time
 from benchmark import run_dns_test
@@ -20,7 +19,7 @@ def main():
     args = parser.parse_args()
 
     num_resolvers = len(args.resolvers)
-    lines_needed = 4 + num_resolvers  # dynamic block size
+    lines_needed = 4 + num_resolvers
 
     # Reserve the display area
     print("\n" * lines_needed)
