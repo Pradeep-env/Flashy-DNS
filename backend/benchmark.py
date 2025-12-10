@@ -27,4 +27,3 @@ def run_dns_test(resolver_ip, domain="example.com", attempts=5):
 
     return result
 
-print(run_dns_test("1.1.1.1"))
