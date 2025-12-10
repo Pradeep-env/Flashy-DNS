@@ -37,7 +37,7 @@ async def run_resolver_async(executor, resolver, domain):
 async def benchmark_live(resolvers, domain, attempts):
     executor = ThreadPoolExecutor(max_workers=len(resolvers))
 
-    lines_needed = 4 + len(resolvers) * 2
+    lines_needed = 4 + len(resolvers)
     print("\n" * lines_needed)
 
     history = {r: [] for r in resolvers}
