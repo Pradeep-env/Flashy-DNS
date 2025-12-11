@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
 import asyncio
 import threading
-import time
 
-from ../backend.benchmark import run_dns_test
+from backend.benchmark import run_dns_test
 
 app = FastAPI()
 
@@ -17,14 +18,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Serve static files
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+# Serve static files under /static
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Shared benchmark state
-state = {
-    "running": False,
-    "results": {}
-}
+# Serve GUI index.html at root
+@app.get("/")
+def serve_gui():
+    return FileResponse("static/index.html")
+
+# Shared state
+state = {"running": False, "results": {}}
 
 async def dns_loop(resolvers, domain):
     while state["running"]:
@@ -34,32 +37,28 @@ async def dns_loop(resolvers, domain):
             for r in resolvers
         ]
         results = await asyncio.gather(*futures)
+        state["results"] = {
+            r["resolver"]: r["avg_latency"] for r in results
+        }
+        await asyncio.sleep(0.2)
 
-        state["results"] = {r["resolver"]: r["avg_latency"] for r in results}
-
-        await asyncio.sleep(0.2)  # UI update frequency
-
-
-@app.post("/start")
+@app.post("/api/start")
 async def start_benchmark():
     if not state["running"]:
         state["running"] = True
         threading.Thread(
-            target=lambda: asyncio.run(dns_loop(
-                ["1.1.1.1", "8.8.8.8", "9.9.9.9"], "google.com"
-            )),
+            target=lambda: asyncio.run(
+                dns_loop(["1.1.1.1", "8.8.8.8", "9.9.9.9"], "google.com")
+            ),
             daemon=True
         ).start()
     return {"status": "started"}
 
-@app.post("/stop")
+@app.post("/api/stop")
 async def stop_benchmark():
     state["running"] = False
     return {"status": "stopped"}
 
-@app.get("/results")
+@app.get("/api/results")
 async def get_results():
-    return {
-        "running": state["running"],
-        "results": state["results"]
-    }
+    return state
