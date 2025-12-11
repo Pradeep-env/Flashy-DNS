@@ -33,37 +33,64 @@ async def run_resolver_async(executor, resolver, domain):
     result = await loop.run_in_executor(executor, run_dns_test, resolver, domain, 1)
     return result
 
-
 async def benchmark_live(resolvers, domain, attempts):
     executor = ThreadPoolExecutor(max_workers=len(resolvers))
+
+    # Shared state
+    results_store = {r: None for r in resolvers}
+    history = {r: [] for r in resolvers}
+    done = False
 
     lines_needed = 4 + len(resolvers)
     print("\n" * lines_needed)
 
-    history = {r: [] for r in resolvers}
+    async def dns_worker():
+        nonlocal done
+        for attempt in range(1, attempts + 1):
+            tasks = [run_resolver_async(executor, r, domain) for r in resolvers]
+            results = await asyncio.gather(*tasks)
 
-    for attempt in range(1, attempts + 1):
-        clear_block(lines_needed)
+            for result in results:
+                r = result["resolver"]
+                latency = result["avg_latency"]
+                failures = result["failures"]
 
-        print("⚡ Flashy DNS Live Benchmark ⚡")
-        print(f"Domain    : {domain}")
-        print(f"Attempt   : {attempt}/{attempts}\n")
+                results_store[r] = (latency, failures, attempt)
 
-        tasks = [run_resolver_async(executor, r, domain) for r in resolvers]
-        results = await asyncio.gather(*tasks)
+                if failures == 0 and latency is not None:
+                    history[r].append(latency)
 
-        for result in results:
-            r = result["resolver"]
-            latency = result["avg_latency"]
-            status = "OK ✓" if result["failures"] == 0 else "FAIL ✗"
+        done = True
 
-            if latency:
-                history[r].append(latency)
+    async def ui_worker():
+        while not done:
+            clear_block(lines_needed)
 
-            print(f"{r:<12} latency: {color_latency(latency)}   {status}")
+            # Determine current attempt (infer from any resolver)
+            attempts_done = next(
+                (v[2] for v in results_store.values() if v is not None),
+                0
+            )
 
-        await asyncio.sleep(0.4)
+            print("⚡ Flashy DNS Live Benchmark ⚡")
+            print(f"Domain    : {domain}")
+            print(f"Attempt   : {attempts_done}/{attempts}\n")
 
+            for r, data in results_store.items():
+                if data is None:
+                    print(f"{r:<12} waiting...")
+                    continue
+
+                latency, failures, _ = data
+                status = "OK ✓" if failures == 0 else "FAIL ✗"
+                print(f"{r:<12} latency: {color_latency(latency)}   {status}")
+
+            await asyncio.sleep(0.1)  # UI tick interval
+
+    # Run DNS worker and UI worker in parallel
+    await asyncio.gather(dns_worker(), ui_worker())
+
+    # Final summary
     print("\nBenchmark complete ✔️\n")
     print("📊 Final Summary")
     print("-----------------------------")
@@ -74,6 +101,7 @@ async def benchmark_live(resolvers, domain, attempts):
             print(f"{r:<12} avg latency: {color_latency(avg_total)}")
         else:
             print(f"{r:<12} no successful queries")
+
 
 
 async def benchmark_once(resolvers, domain, attempts):
@@ -103,6 +131,19 @@ async def benchmark_once(resolvers, domain, attempts):
 
 
 def main():
+    print()
+    print()
+    print('''             ........  ...          ...     ...........  ...     ...  ...    ...       .....       ...      ...   ...........
+             ........  ...         .. ..    ...........  ...     ...   ...   ...       ...  ..     ....     ...   ...........
+             ...       ...        ..   ..   ...          ...     ...    ...  ...       ...   ..    .....    ...   ...
+             ........  ...       ..     ..    ...        ...........     ... ...       ...    ..   ...  ..  ...     ...
+             ........  ...       .........      ...      ...........      ......       ...    ..   ...   .. ...       ...
+             ...       ...       ..     ..        ...    ...     ...        ....       ...   ..    ...    .....         ...
+             ...       ........  ..     ..  ...........  ...     ...        ....       ...  ..     ...     ....    ..........
+             ...       ........  ..     ..  ...........  ...     ...        ....       .....       ...      ...    ..........
+
+    ''')
+    print("----------------------------------------------------------⚡-------------------------------------------------------------------\n")
     parser = argparse.ArgumentParser(description="Flashy DNS CLI Benchmark ⚡")
     parser.add_argument("-r", "--resolvers", nargs="+", required=True)
     parser.add_argument("-d", "--domain", default="example.com")
