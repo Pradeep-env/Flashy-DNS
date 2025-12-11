@@ -1,9 +1,8 @@
 # Flashy-DNS
 <p align="center">
-  <img src="docs/banner.png" width="420"/>
+  <img src="https://github.com/Pradeep-env/Flashy-DNS/blob/main/src/flashy-dns.png?raw=true" width="420"/>
 </p>
 
-<h1 align="center">Flashy DNS ⚡</h1>
 <p align="center">A lightweight, self-hosted DNS benchmarking tool built in both terminal and GUI mode.</p>
 
 ---
