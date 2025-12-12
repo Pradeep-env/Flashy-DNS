@@ -19,7 +19,7 @@ app.add_middleware(
 )
 
 # Serve static files under /static
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="static", html=True), name="static")
 
 # Serve GUI index.html at root
 @app.get("/")
@@ -48,7 +48,7 @@ async def start_benchmark():
         state["running"] = True
         threading.Thread(
             target=lambda: asyncio.run(
-                dns_loop(["1.1.1.1", "8.8.8.8", "9.9.9.9"], "google.com")
+                dns_loop(["1.1.1.1", "8.8.8.8", "9.9.9.9", "208.67.222.222", "94.140.14.14"], "github.com")
             ),
             daemon=True
         ).start()

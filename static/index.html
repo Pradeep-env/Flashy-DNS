@@ -10,32 +10,92 @@
 <div id="head">
 <div id="head1">
 <h2>Flashy DNS</h2>
-<h3>DNS Benchmark</h3>
 <h4>Real-time performance testing tool for DNS Resolvers.</h4>
 </div>
 <div id="head2">
-<button style="width: 30%;">Benchmark</button>
-<button></button>
-<button></button>
+<button style="width: 30%;" id="benchmark">Benchmark</button>
 </div>
 </div>
 
 <div id="body1">
-<div class="box" style="border-top:8px solid skyblue;"></div>
-<div class="box" style="border-top:8px solid orange;"></div>
-<div class="box" style="border-top:8px solid greenyellow;"></div>
-<div class="box" style="border-top:8px solid red;"></div>
-<div class="box" style="border-top:8px solid gray;"></div>
+
+
+<div class="box" style="border-top:8px solid skyblue;">
+<div>
+<h2>Google DNS</h2>
+<button style="background:blue; width:20%; color:white; padding:2%; border-radius:5px; font-weight:600;">Fast</button>
+</div>
+<p>8.8.8.8</p>
+<div><p class="crit"><img src="/static/vital_signs.svg"/><i>Current</i></p><p class="crit"><img src="/static/schedule.svg"/><i>Average</i></p></div>
+<div><h2 id="google">0ms</h2><h2>20ms</h2></div>
+
+<div><p class="crit"><img src="/static/check_circle.svg"/><i>Success</i></p><p class="crit"><img src="/static/trending_up.svg"/><i>Score</i></p></div>
+<div><h2>98%</h2><h2>90</h2></div>
+
 </div>
 
-<div class="controls">
-    <button id="startBtn">Start Benchmark</button>
-    <button id="stopBtn">Stop</button>
+
+<div class="box" style="border-top:8px solid orange;">
+<div>
+<h2>CloudFlare</h2>
+<button style="background:blue; width:20%; color:white; padding:2%; border-radius:5px; font-weight:600;">Fast</button>
+</div>
+<p>1.1.1.1</p>
+<div><p class="crit"><img src="/static/vital_signs.svg"/><i>Current</i></p><p class="crit"><img src="/static/schedule.svg"/><i>Average</i></p></div>
+<div><h2 id="cloud">0ms</h2><h2>20ms</h2></div>
+
+<div><p class="crit"><img src="/static/check_circle.svg"/><i>Success</i></p><p class="crit"><img src="/static/trending_up.svg"/><i>Score</i></p></div>
+<div><h2>98%</h2><h2>90</h2></div>
+
 </div>
 
-<div id="statusBox">Status: idle</div>
 
-<div id="results"></div>
+<div class="box" style="border-top:8px solid greenyellow;">
+<div>
+<h2>OpenDNS</h2>
+<button style="background:blue; width:20%; color:white; padding:2%; border-radius:5px; font-weight:600;">Fast</button>
+</div>
+<p>208.67.222.222</p>
+<div><p class="crit"><img src="/static/vital_signs.svg"/><i>Current</i></p><p class="crit"><img src="/static/schedule.svg"/><i>Average</i></p></div>
+<div><h2 id="open">0ms</h2><h2>20ms</h2></div>
+
+<div><p class="crit"><img src="/static/check_circle.svg"/><i>Success</i></p><p class="crit"><img src="/static/trending_up.svg"/><i>Score</i></p></div>
+<div><h2>98%</h2><h2>90</h2></div>
+
+</div>
+
+
+<div class="box" style="border-top:8px solid red;">
+<div>
+<h2>Quad9</h2>
+<button style="background:blue; width:20%; color:white; padding:2%; border-radius:5px; font-weight:600;">Fast</button>
+</div>
+<p>9.9.9.9</p>
+<div><p class="crit"><img src="/static/vital_signs.svg"/><i>Current</i></p><p class="crit"><img src="/static/schedule.svg"/><i>Average</i></p></div>
+<div><h2 id="quad">0ms</h2><h2>20ms</h2></div>
+
+<div><p class="crit"><img src="/static/check_circle.svg"/><i>Success</i></p><p class="crit"><img src="/static/trending_up.svg"/><i>Score</i></p></div>
+<div><h2>98%</h2><h2>90</h2></div>
+
+</div>
+
+
+<div class="box" style="border-top:8px solid gray;">
+<div>
+<h2>AdGuard</h2>
+<button style="background:blue; width:20%; color:white; padding:2%; border-radius:5px; font-weight:600;">Fast</button>
+</div>
+<p>94.140.14.14</p>
+<div><p class="crit"><img src="/static/vital_signs.svg"/><i>Current</i></p><p class="crit"><img src="/static/schedule.svg"/><i>Average</i></p></div>
+<div><h2 id="ad">0ms</h2><h2>20ms</h2></div>
+
+<div><p class="crit"><img src="/static/check_circle.svg"/><i>Success</i></p><p class="crit"><img src="/static/trending_up.svg"/><i>Score</i></p></div>
+<div><h2>98%</h2><h2>90</h2></div>
+
+</div>
+</div>
+
+
 
 <script src="./static/index.js"></script>
 </body>

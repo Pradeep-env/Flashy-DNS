@@ -41,6 +41,7 @@ width:10%;
 border-radius:5px;
 box-shadow:0px 0px 5px 0px black;
 font-size:large;
+cursor:pointer;
 }
 
 #body1{
@@ -59,4 +60,26 @@ height:80%;
 width:18%;
 box-shadow:0px 0px 5px 0px black;
 border-radius:8px;
+display:flex;
+justify-content:space-evenly;
+flex-direction:column;
+align-items:center;
 }
+
+.box div{
+width:90%;
+height:10%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+}
+.box .crit{
+height:100%;
+width:fit-content;
+display:flex;
+align-items:center;
+justify-content:space-between;
+overflow:hidden;
+}
+
