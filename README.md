@@ -77,12 +77,18 @@ GUI:
 
 ## Installation
 
-Install dependencies:
+For CLI only usage:
 
 ```bash
-pip install -r backend/requirements.txt
+curl -fsSL https://raw.githubusercontent.com/Pradeep-env/Flashy-DNS/main/install_cli.sh | bash
+
 ````
 
+For Complete Installion(CLI + GUI)
+```bash
+curl -fsSL https://raw.githubusercontent.com/Pradeep-env/Flashy-DNS/main/install_full.sh | bash
+
+````
 Python 3.9+ recommended.
 
 ---
