@@ -108,7 +108,7 @@ async def dns_loop(resolvers, domain):
                 # rank added below
             }
 
-        # compute ranking by average latency
+        # Ranking by average latency
         sorted_keys = sorted(
             aggregated.keys(),
             key=lambda x: (
