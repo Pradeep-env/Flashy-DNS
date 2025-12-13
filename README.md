@@ -1,4 +1,3 @@
-```markdown
 # ⚡ Flashy DNS
 
 Flashy DNS is a lightweight, self-hosted DNS benchmarking tool with both CLI and GUI modes.  
@@ -77,7 +76,6 @@ GUI:
 
 ## Project Structure
 
-```
 
 Flashy-DNS/
 │
