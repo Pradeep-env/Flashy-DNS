@@ -74,29 +74,6 @@ GUI:
 
 ---
 
-## Project Structure
-
-
-Flashy-DNS/
-│
-├── backend/
-│   ├── benchmark.py        # Core DNS benchmarking logic
-│   ├── realtime_bench.py   # Optimized realtime engine for GUI
-│   ├── flashy_dns.py       # CLI entrypoint
-│   ├── server.py           # FastAPI backend
-│   └── requirements.txt
-│
-├── static/
-│   ├── index.html          # GUI layout
-│   ├── index.js            # GUI logic
-│   └── style.css
-│
-├── LICENSE
-└── README.md
-
-````
-
----
 
 ## Installation
 
@@ -226,41 +203,3 @@ Open an issue before major changes.
 
 ---
 
-## License
-
-MIT License.
-
-Use it, fork it, learn from it, improve it.
-
----
-
-## Roadmap (Not Promises)
-
-* Optional WebSocket mode
-* Median / p95 latency views
-* Exportable benchmark reports
-* Resolver auto-recommendation
-* UI polish and theming
-
----
-
-## Final Note
-
-Flashy DNS is built for people who like to understand systems, not just consume numbers.
-
-If you enjoy tools that show what’s actually happening under the hood, you’ll feel at home here.
-
-⚡
-
-```
-
----
-
-If you want next, I can do the same **single-file style** for:
-- `CONTRIBUTING.md`
-- `COLLAB.md`
-- a clean `CHANGELOG.md`
-- a v0.1.0 release checklist
-
-Just say which one.
-```
