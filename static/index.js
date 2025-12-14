@@ -77,6 +77,13 @@ async function fetchResults() {
 
             if (stats.avg_latency != null && avgElem) {
                 avgElem.innerText = `${stats.avg_latency} ms`;
+                if(stats.avg_latency < 35)
+                { avgElem.style.color = "green";}
+                else if(stats.avg_latency > 35 && stats.avg_latency < 100)
+                {avgElem.style.color = "yellow";}
+                else{
+                 avgElem.style.color = "red";
+                }
             }
 
             if (successElem && typeof stats.success_rate !== "undefined") {
