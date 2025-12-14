@@ -146,6 +146,10 @@ async def start():
 @app.post("/api/stop")
 async def stop():
     state["running"] = False
+    histories = {}
+    success_counts = {}
+    sample_counts = {}
+
     return {"status": "stopped"}
 
 @app.get("/api/results")
