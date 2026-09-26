@@ -21,3 +21,6 @@ flashy-dns = "src.cli.main:main"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["src*"]
+
+[tool.setuptools.package-data]
+"src.web" = ["static/*", "static/**/*"]
