@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flashy-DNS v2</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="app-header">
+      <div class="brand">
+        <span class="bolt">⚡</span>
+        <h1>Flashy-DNS <span class="tag">v2</span></h1>
+      </div>
+      <div class="system-status">
+        <span class="label">Host DNS:</span>
+        <span id="host-dns-display" class="dns-chip">detecting...</span>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="card daemon-panel">
+        <div class="card-header">
+          <div>
+            <h2>5-Min Auto-Switch Daemon</h2>
+            <p class="subtitle">Continuously evaluates resolvers & updates system DNS if 20%+ faster</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="daemon-toggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="daemon-meta">
+          <div class="meta-item">
+            <span class="meta-title">Status</span>
+            <span id="daemon-status-text" class="status-offline">Offline</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-title">Active Primary</span>
+            <span id="daemon-primary" class="mono">-</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-title">Interval</span>
+            <span class="mono">300s</span>
+          </div>
+          <button id="btn-force-daemon" class="btn btn-secondary">Evaluate & Switch Now</button>
+        </div>
+      </section>
+
+      <section class="card bench-panel">
+        <div class="card-header">
+          <div>
+            <h2>Interactive Benchmark</h2>
+            <p class="subtitle">High-frequency asynchronous resolver testing</p>
+          </div>
+          <div class="actions">
+            <button id="btn-toggle-bench" class="btn btn-primary">Start Benchmark</button>
+          </div>
+        </div>
+
+        <div class="bench-config">
+          <div class="input-group">
+            <label for="target-domain">Target Domain</label>
+            <input type="text" id="target-domain" value="example.com" placeholder="example.com">
+          </div>
+          <div class="input-group full">
+            <label for="resolvers-input">Resolvers (comma-separated)</label>
+            <input type="text" id="resolvers-input" value="1.1.1.1, 8.8.8.8, 9.9.9.9, 208.67.222.222, 94.140.14.14">
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Resolver</th>
+                <th>Current RTT</th>
+                <th>Avg Latency</th>
+                <th>Reliability</th>
+                <th>Health Score</th>
+              </tr>
+            </thead>
+            <tbody id="results-body">
+              <tr>
+                <td colspan="6" class="placeholder">Click "Start Benchmark" to record latency</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="/static/index.js"></script>
+</body>
+</html>
