@@ -73,7 +73,7 @@ Run Flashy DNS directly on your host using Python 3.10+:
 ### 1. Clone & Set Up Virtual Environment
 
 ```bash
-git clone [https://github.com/Pradeep-env/Flashy-DNS.git](https://github.com/Pradeep-env/Flashy-DNS.git)
+git clone https://github.com/Pradeep-env/Flashy-DNS.git
 cd Flashy-DNS
 
 python -m venv .venv
