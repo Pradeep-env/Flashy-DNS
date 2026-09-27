@@ -1,0 +1,13 @@
+services:
+  flashy-dns:
+    build:
+      context: ..
+      dockerfile: container/Containerfile
+    container_name: flashy-dns
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - /run/systemd/resolve:/run/systemd/resolve
+      - /etc/resolv.conf:/etc/resolv.conf
+    restart: unless-stopped
