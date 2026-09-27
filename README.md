@@ -1,11 +1,11 @@
 # ⚡ Flashy DNS
 
-Flashy DNS is a lightweight, self-hosted DNS benchmarking tool with both CLI and GUI modes.  
-It focuses on real-time latency visibility and resolver stability rather than raw QPS numbers.
+Flashy DNS is a lightweight, self-hosted DNS benchmarking tool and Linux auto-switching daemon with both CLI and GUI modes.  
+It focuses on real-time latency visibility, resolver stability, and effortless zero-downtime DNS optimization rather than raw QPS numbers.
 
 Flashy DNS answers one simple question:
 
-Which DNS resolver actually feels faster and more reliable right now?
+> Which DNS resolver actually feels faster and more reliable right now?
 
 ---
 
@@ -13,199 +13,162 @@ Which DNS resolver actually feels faster and more reliable right now?
 
 Flashy DNS **is**:
 - A real-time DNS latency benchmarking tool
-- A CLI tool with live terminal dashboard
-- A GUI tool for visual comparison of resolvers
-- Async and parallel by design
-- Focused on accuracy, transparency, and usability
+- A CLI tool with live interactive terminal reporting
+- A modern dark-mode GUI dashboard for visual resolver comparisons
+- An automated Linux background daemon that hot-swaps system resolvers when faster candidates appear
+- Async and parallel by design using `dnspython` and `FastAPI`
 
 Flashy DNS **is not**:
-- A dnsperf replacement
-- A DNS stress or load testing tool
+- A `dnsperf` replacement
+- A DNS stress or high-volume load-testing suite
 - A QPS competition tool
 
-If you need maximum throughput testing, use dnsperf.  
-If you want to understand real resolver behavior over time, use Flashy DNS.
+If you need maximum query throughput testing, use `dnsperf`.  
+If you want to understand real resolver behavior over time and auto-tune your system DNS, use Flashy DNS.
 
 ---
 
 ## How Latency Is Measured
 
-Flashy DNS measures actual DNS resolution latency, not socket connect time.
+Flashy DNS measures actual end-to-end DNS resolution latency, not simple socket connect time.
 
-Measurement model:
-- Resolvers are queried in parallel
-- Each update uses multiple attempts (default: 3) to smooth jitter
-- Failed queries do not affect averages
-- Latency metrics are computed continuously
+### Measurement Model
+- Resolvers are queried concurrently using asynchronous DNS lookups.
+- Failed queries register timeouts without distorting latency averages.
+- Rolling stats continuously calculate mean response times.
 
-Metrics explained:
-- Current latency: latest successful DNS query
-- Average latency: rolling mean of recent successful samples
-- Success rate: percentage of successful resolutions
-- Score: combined metric based on success rate and latency
-- Rank: resolver ordering by average latency (lower is better)
-
-Why results may differ from dnsperf:
-- dnsperf measures throughput (QPS)
-- Flashy DNS measures interactive latency
-- Flashy DNS runs continuously with short pauses
-- GUI introduces minimal async overhead by design
-
-Relative ranking remains consistent, which is what matters for resolver choice.
+### Metrics Explained
+- **Current Latency**: Latency of the latest completed DNS resolution.
+- **Average Latency**: Rolling mean of recent successful query samples.
+- **Reliability (Success Rate)**: Percentage of successful resolutions vs attempts.
+- **Health Score**: Composite metric weighting reliability (60%) and latency performance (40%).
+- **Rank**: Resolver priority ordered by lowest average latency.
 
 ---
 
 ## Features
 
-CLI:
-- Live dashboard mode
-- Colored latency indicators
-- Parallel async execution
-- Multiple resolvers support
-- Clean terminal output
+### CLI Mode
+- Terminal-native live reporting dashboard
+- Real-time colored latency thresholds
+- Fully non-blocking asynchronous execution
+- Support for arbitrary resolver sets and query targets
+- No Docker required; zero system modifications by default
 
-GUI:
-- One-button Start / Stop benchmarking
-- Real-time updates
-- Current, average, success rate, score, rank
-- Lightweight frontend (no React, no build tools)
-- FastAPI backend
-- Fully self-hosted
+### GUI & Daemon Mode
+- Real-time visual metrics table
+- Integrated **5-Minute Auto-Switch Daemon**:
+  - Automatically evaluates candidate resolvers in the background.
+  - Applies system-level DNS changes via `systemd-resolved` or `/etc/resolv.conf`.
+  - Built-in 20% hysteresis margin to prevent flapping between near-identical resolvers.
+- Instant "Evaluate & Switch Now" override trigger.
+- Pure CSS/Vanilla JS interface with zero Node.js build steps.
 
 ---
 
+## Running the CLI (Manual Setup)
 
-## Installation
+Run Flashy DNS directly on your host using Python 3.10+:
 
-For CLI only usage:
+### 1. Clone & Set Up Virtual Environment
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Pradeep-env/Flashy-DNS/main/install_cli.sh | bash
+git clone [https://github.com/Pradeep-env/Flashy-DNS.git](https://github.com/Pradeep-env/Flashy-DNS.git)
+cd Flashy-DNS
 
-````
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
 
-For Complete Installion(CLI + GUI)
-```bash
-curl -fsSL https://raw.githubusercontent.com/Pradeep-env/Flashy-DNS/main/install_full.sh | bash
+```
 
-````
-Python 3.9+ recommended.
+### 2. Run Benchmark
 
----
-
-## CLI Usage
-
-Basic benchmark:
+For summary mode:
 
 ```bash
-python backend/flashy_dns.py -r 1.1.1.1 8.8.8.8 9.9.9.9
+flashy-dns -r 1.1.1.1 8.8.8.8 9.9.9.9 208.67.222.222
 ```
 
-Live dashboard mode:
+Live terminal dashboard:
 
 ```bash
-python backend/flashy_dns.py -r 1.1.1.1 8.8.8.8 9.9.9.9 --live
+flashy-dns -r 1.1.1.1 8.8.8.8 9.9.9.9 208.67.222.222 --live
 ```
 
-Options:
+CLI Options:
 
-* `-r / --resolvers`  DNS resolver IPs
-* `-d / --domain`     Domain to query (default: example.com)
-* `-t / --attempts`   Number of attempts
-* `--live`            Enable live terminal dashboard
+* `-r / --resolvers`  DNS resolver IPs to benchmark (space-separated)
+* `-d / --domain`     Target domain to resolve (default: example.com)
+* `-t / --attempts`   Number of query samples per resolver (default: 5)
+* `--live`            Launch interactive multi-line terminal dashboard
 
----
+## Running the GUI & Daemon (Docker / Compose)
 
-## GUI Usage
+Deploy the Web UI and Auto-Switching daemon isolated inside a container.
 
-Start the backend from the project root:
+Host networking (network_mode: host) and NET_ADMIN privileges allow the container to benchmark host interfaces and optionally update system resolvers.
+
+### 1. Start the Container
 
 ```bash
-uvicorn backend.server:app --reload --reload-dir static
+docker compose -f container/compose.yml up -d --build
+```
+(Podman users can substitute podman compose -f container/compose.yml up -d --build)
+
+### 2. Access Dashboard
+
+```bash
+http://localhost:8000
 ```
 
-Open in browser:
+### 3. Manage the Container
 
+view logs:
+
+```bash
+docker compose -f container/compose.yml logs -f
 ```
-http://127.0.0.1:8000
+
+stop container:
+
+```bash
+docker compose -f container/compose.yml stop
 ```
 
-GUI behavior:
+start container:
 
-* Click Benchmark to start
-* Click again to stop
-* Data updates live
-* No configuration required
+```bash
+docker compose -f container/compose.yml start
+```
 
----
+remove container:
 
-## About Scores and Ranking
+```bash
+docker compose -f container/compose.yml down -v
+```
 
-Success rate:
+## Score Calculation
 
-* Percentage of successful DNS resolutions
+Resolvers receive a score from 0 to 100 calculated as:
 
-Score (0–100):
+$$\text{Score} = (0.6 \times \text{Success Rate}) + (0.4 \times \text{Latency Factor})$$
 
-* 60% weight: success rate
-* 40% weight: average latency
-* Designed to reward stability over spikes
-
-Rank:
-
-* Based on average latency
-* Lower latency ranks higher
-
-Scores are meant for comparison, not absolute judgment.
-
----
-
-## Accuracy Notes
-
-* GUI latency may be slightly higher than CLI (10–20ms)
-* This is expected due to async scheduling and UI updates
-* Both modes use the same DNS resolution logic
-* Relative ordering remains consistent
-
-Use CLI for minimal overhead measurements.
-Use GUI for understanding behavior over time.
-
----
-
-## Validation
-
-Flashy DNS has been validated against:
-
-* dnsperf
-* dig
-* repeated manual DNS resolution tests
-
-Results align in relative ranking, which is the primary goal.
-
----
+Where:
+- Success Rate: Resolved percentage over total attempts.
+- Latency Factor: Scaled performance window favoring sub-30ms response times.
 
 ## Development Philosophy
 
-* Simple over clever
-* Observable over abstract
-* Honest numbers over impressive numbers
-* Lightweight over complex
-* Async where it helps, not everywhere
-
----
+* Simple over clever: Minimal moving parts, readable Python.
+* Observable over abstract: Direct measurements over synthetic models.
+* Lightweight over complex: No frontend framework overhead; pure HTML/CSS/JS.
+* Safe automation: Auto-switching requires significant performance gains (hysteresis) to prevent route thrashing.
 
 ## Contributing
 
 Contributions are welcome.
 
-Guidelines:
-
-* Benchmark logic changes should be discussed
-* UI changes must not affect measurement accuracy
-* Keep dependencies minimal
-* Avoid heavy frontend frameworks
-
-Open an issue before major changes.
-
----
-
+* Keep dependencies minimal and targeted.
+* Ensure UI updates never block the async benchmark event loop.
+* Test compatibility with both systemd-resolved and standard /etc/resolv.conf setups.
