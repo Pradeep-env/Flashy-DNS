@@ -64,6 +64,7 @@ Flashy DNS measures actual end-to-end DNS resolution latency, not simple socket 
 - Instant "Evaluate & Switch Now" override trigger.
 - Lightweight CSS/Vanilla JS interface.
 
+
 ---
 
 ## Running the CLI (Manual Setup)
@@ -105,6 +106,7 @@ CLI Options:
 * `--daemon`          Run as a continuous foreground auto-switch daemon
 * `--switch-now`      Run evaluation once and switch system DNS immediately if faster
 * `--attempts`        Check interval in seconds (daemon mode only, default: 300), only combined with daemon.
+
 
 ## Running the GUI & Daemon (Docker / Compose)
 
