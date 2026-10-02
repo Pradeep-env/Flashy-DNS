@@ -62,7 +62,8 @@ Flashy DNS measures actual end-to-end DNS resolution latency, not simple socket 
   - Applies system-level DNS changes via `systemd-resolved` or `/etc/resolv.conf`.
   - Built-in 20% hysteresis margin to prevent flapping between near-identical resolvers.
 - Instant "Evaluate & Switch Now" override trigger.
-- Pure CSS/Vanilla JS interface with zero Node.js build steps.
+- Lightweight CSS/Vanilla JS interface.
+
 
 ---
 
@@ -102,6 +103,10 @@ CLI Options:
 * `-d / --domain`     Target domain to resolve (default: example.com)
 * `-t / --attempts`   Number of query samples per resolver (default: 5)
 * `--live`            Launch interactive multi-line terminal dashboard
+* `--daemon`          Run as a continuous foreground auto-switch daemon
+* `--switch-now`      Run evaluation once and switch system DNS immediately if faster
+* `--attempts`        Check interval in seconds (daemon mode only, default: 300), only combined with daemon.
+
 
 ## Running the GUI & Daemon (Docker / Compose)
 
