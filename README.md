@@ -78,6 +78,8 @@ git clone https://github.com/Pradeep-env/Flashy-DNS.git
 cd Flashy-DNS
 
 python -m venv .venv
+# or
+python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
 
